@@ -2,9 +2,10 @@ package g
 
 import (
 	"container/list"
-	"github.com/name5566/leaf/conf"
+
 	"github.com/name5566/leaf/log"
-	"runtime"
+	"github.com/timandy/routine"
+
 	"sync"
 )
 
@@ -39,13 +40,7 @@ func (g *Go) Go(f func(), cb func()) {
 		defer func() {
 			g.ChanCb <- cb
 			if r := recover(); r != nil {
-				if conf.LenStackBuf > 0 {
-					buf := make([]byte, conf.LenStackBuf)
-					l := runtime.Stack(buf, false)
-					log.Error("%v: %s", r, buf[:l])
-				} else {
-					log.Error("%v", r)
-				}
+				log.Error("%v", routine.NewRuntimeError(r))
 			}
 		}()
 
@@ -57,13 +52,7 @@ func (g *Go) Cb(cb func()) {
 	defer func() {
 		g.pendingGo--
 		if r := recover(); r != nil {
-			if conf.LenStackBuf > 0 {
-				buf := make([]byte, conf.LenStackBuf)
-				l := runtime.Stack(buf, false)
-				log.Error("%v: %s", r, buf[:l])
-			} else {
-				log.Error("%v", r)
-			}
+			log.Error("%v", routine.NewRuntimeError(r))
 		}
 	}()
 
@@ -107,13 +96,7 @@ func (c *LinearContext) Go(f func(), cb func()) {
 		defer func() {
 			c.g.ChanCb <- e.cb
 			if r := recover(); r != nil {
-				if conf.LenStackBuf > 0 {
-					buf := make([]byte, conf.LenStackBuf)
-					l := runtime.Stack(buf, false)
-					log.Error("%v: %s", r, buf[:l])
-				} else {
-					log.Error("%v", r)
-				}
+				log.Error("%v", routine.NewRuntimeError(r))
 			}
 		}()
 

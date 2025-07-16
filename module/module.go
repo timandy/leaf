@@ -1,9 +1,9 @@
 package module
 
 import (
-	"github.com/name5566/leaf/conf"
 	"github.com/name5566/leaf/log"
-	"runtime"
+	"github.com/timandy/routine"
+
 	"sync"
 )
 
@@ -58,13 +58,7 @@ func run(m *module) {
 func destroy(m *module) {
 	defer func() {
 		if r := recover(); r != nil {
-			if conf.LenStackBuf > 0 {
-				buf := make([]byte, conf.LenStackBuf)
-				l := runtime.Stack(buf, false)
-				log.Error("%v: %s", r, buf[:l])
-			} else {
-				log.Error("%v", r)
-			}
+			log.Error("%v", routine.NewRuntimeError(r))
 		}
 	}()
 

@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/gorilla/websocket v1.5.3
+	github.com/timandy/routine v1.1.5
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
